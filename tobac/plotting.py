@@ -17,12 +17,13 @@ References
 import matplotlib as mpl
 import warnings
 import logging
+from . import  utils as tb_utils
 from .analysis import lifetime_histogram
 from .analysis import histogram_cellwise, histogram_featurewise
 
 import numpy as np
 
-
+#@tb_utils.depreciate_function(message="This function will be removed on or after v1.6.")
 def plot_tracks_mask_field_loop(
     track,
     field,

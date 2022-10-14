@@ -894,3 +894,35 @@ def spectral_filtering(
         return (lambda_mn, transfer_function), filtered_field
     else:
         return filtered_field
+
+def depreciate_function(message=""):
+    '''Decorator to depreciate a function with an 
+    optional message to give to users
+
+    Parameters
+    ----------
+    message: str
+        An optional message to pass to users about the depreciation
+
+    Returns
+    -------
+    A decorated function object with a DeprecationWarning added
+    '''
+    import functools
+    import warnings
+    def deprecator_worker(func):
+        @functools.wraps(func)
+        def new_func(*args, **kwargs):
+            # add a preceeding space
+            if message != "":
+                message = " "+message
+            warnings.warn(
+            "{func_name} is depreciated.{message}".format(func_name = func.__name__, message=message),
+            warnings.DeprecationWarning,
+            )
+            return func(*args, **kwargs)
+            
+        return new_func
+    return deprecator_worker
+
+        
