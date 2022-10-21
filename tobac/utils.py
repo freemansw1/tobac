@@ -915,10 +915,12 @@ def depreciate_function(message=""):
         def new_func(*args, **kwargs):
             # add a preceeding space
             if message != "":
-                message = " "+message
+                warn_message = " "+message
+            else:
+                warn_message = message
             warnings.warn(
-            "{func_name} is depreciated.{message}".format(func_name = func.__name__, message=message),
-            warnings.DeprecationWarning,
+            "{func_name} is depreciated.{message}".format(func_name = func.__name__, message=warn_message),
+            DeprecationWarning,
             )
             return func(*args, **kwargs)
             
