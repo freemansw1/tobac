@@ -423,9 +423,9 @@ def linking_trackpy(
 
             stub_cell_nums.append(cell)
 
-        trajectories_unfiltered.loc[
-            trajectories_unfiltered["cell"].isin(stub_cell_nums), "cell"
-        ] = cell_number_unassigned
+    trajectories_unfiltered.loc[
+        trajectories_unfiltered["cell"].isin(stub_cell_nums), "cell"
+    ] = cell_number_unassigned
 
     trajectories_filtered = trajectories_unfiltered
 
