@@ -24,17 +24,16 @@ jobs:
         os: [macos, ubuntu, windows]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
 
       # Install micromamba and dependencies
       - name: Setup Conda Environment
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v3
         with:
           environment-file: environment-ci.yml
-          activate-environment: pyart-dev
           cache-downloads: true
-          channels: conda-forge
-          channel-priority: strict
+          condarc: |
+            channel_priority: strict
           create-args: python=${{ matrix.python-version }}
 
       - name: Fetch all history for all tags and branches
