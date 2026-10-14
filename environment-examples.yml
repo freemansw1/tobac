@@ -27,10 +27,9 @@ dependencies:
   - numba
   - dask
   - ffmpeg
-  - intake==0.7.0
-  - intake-xarray==0.7.0
+  - zarr
+  - aiohttp
   - healpix
-  - easygems==0.1.2
   - pyvista>=0.46
   - trame
   - trame-vtk
