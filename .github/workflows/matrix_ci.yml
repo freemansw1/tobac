@@ -24,7 +24,7 @@ jobs:
         os: [macos, ubuntu, windows]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # Install micromamba and dependencies
       - name: Setup Conda Environment
@@ -36,10 +36,6 @@ jobs:
           channels: conda-forge
           channel-priority: strict
           create-args: python=${{ matrix.python-version }}
-
-      - name: Fetch all history for all tags and branches
-        run: |
-          git fetch --prune --unshallow
 
       - name: Install tobac
         shell: bash -l {0}
