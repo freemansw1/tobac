@@ -1,0 +1,31 @@
+name: Solve pixi.lock
+# solving the pixi.lock/environment
+on:
+  workflow_call:
+    outputs:
+      cache-key:
+        description: Cache key of the solved pixi.lock, for xarray-contrib/pixi-lock/restore
+        value: ${{ jobs.cache-pixi-lock.outputs.cache-key }}
+      pixi-version:
+        description: pixi version used to solve the lock
+        value: ${{ jobs.cache-pixi-lock.outputs.pixi-version }}
+
+jobs:
+  # Solve pixi.lock from pixi.toml once per day
+  cache-pixi-lock:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.pixi-lock.outputs.cache-key }}
+      pixi-version: ${{ steps.pixi-lock.outputs.pixi-version }}
+    steps:
+      - uses: actions/checkout@v4
+        # lock to a commit hash for security, as suggested in the docs
+      - uses: xarray-contrib/pixi-lock/create-and-cache@1fab4c17af8243f6ca1321bc941cf2325f46c05d # v0.1.1
+        id: pixi-lock
+        with:
+          pixi-version: v0.55.0
+      # upload lock file for debugging
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pixi-lock
+          path: pixi.lock

@@ -3,25 +3,25 @@ name: Codecov CI
 on: [push, pull_request]
 
 jobs:
+  cache-pixi-lock:
+    uses: ./.github/workflows/pixi-lock.yml
+
   run:
     runs-on: ubuntu-latest
+    needs: cache-pixi-lock
     env:
       OS: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Similar to MetPy install-conda action
-      - name: Set up conda
-        uses: mamba-org/setup-micromamba@v1
+      - name: Set up pixi environment
+        uses: ./.github/actions/setup-pixi-env
         with:
-          environment-file: environment-ci.yml
-          generate-run-shell: true
-          cache-environment: true
-          cache-downloads: true
+          cache-key: ${{ needs.cache-pixi-lock.outputs.cache-key }}
+          pixi-version: ${{ needs.cache-pixi-lock.outputs.pixi-version }}
 
       - name: Generate report
-        shell: micromamba-shell {0}
         run:
-          python -m coverage run -m pytest --cov=./ --cov-report=xml
+          pixi run coverage
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v4
         with:

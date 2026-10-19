@@ -1,8 +1,12 @@
 name: Jupyter Notebooks CI
 on: [push, pull_request]
 jobs:
+  cache-pixi-lock:
+    uses: ./.github/workflows/pixi-lock.yml
+
   Check-Notebooks:
     runs-on: ubuntu-latest
+    needs: cache-pixi-lock
     env:
       CI: true
     defaults:
@@ -10,20 +14,17 @@ jobs:
         shell: bash -el {0}
     steps:
       - name: check out repository code
-        uses: actions/checkout@v3
-      - name: set up mamba environment
-        uses: mamba-org/setup-micromamba@v1
+        uses: actions/checkout@v4
+      - name: Set up pixi environment
+        uses: ./.github/actions/setup-pixi-env
         with:
-          environment-file: environment-examples.yml
-          generate-run-shell: true
-          cache-environment: true
-          cache-downloads: true
-      - name: Install tobac
-        run: |
-          pip install .
+          cache-key: ${{ needs.cache-pixi-lock.outputs.cache-key }}
+          pixi-version: ${{ needs.cache-pixi-lock.outputs.pixi-version }}
+          environments: examples
+          activate-environment: examples
       - name: Find all notebook files
         run: |
-          find . -type f -name '*.ipynb' > nbfiles.txt
+          find . -type f -name '*.ipynb' -not -path './.pixi/*' > nbfiles.txt
           cat nbfiles.txt
       - name: Execute all notebook files
         run: |

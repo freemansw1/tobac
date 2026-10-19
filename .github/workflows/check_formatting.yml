@@ -1,19 +1,21 @@
 name: Check Python File Formatting with Black
 on: [push, pull_request]
 jobs:
+  # solve pixi.lock once per day; shared by every job (see pixi-lock.yml)
+  cache-pixi-lock:
+    uses: ./.github/workflows/pixi-lock.yml
+
   formatting_job:
     runs-on: ubuntu-latest
+    needs: cache-pixi-lock
     steps:
       - uses: actions/checkout@v4
-      - name: Set up conda
-        uses: mamba-org/setup-micromamba@v1
+      - name: Set up pixi environment
+        uses: ./.github/actions/setup-pixi-env
         with:
-          environment-file: environment-ci.yml
-          generate-run-shell: true
-          cache-environment: true
-          cache-downloads: true
+          cache-key: ${{ needs.cache-pixi-lock.outputs.cache-key }}
+          pixi-version: ${{ needs.cache-pixi-lock.outputs.pixi-version }}
       - name: Check formatting
-        shell: micromamba-shell {0}
         run:
-          black --version &&
-          black tobac --check --diff 
+          pixi run black --version &&
+          pixi run lint-black
