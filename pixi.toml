@@ -1,5 +1,6 @@
 # pixi workspace used by CI (and available for local development).
-# Run e.g. `pixi run -e py313 test`, `pixi run lint-black`, `pixi run -e examples jupyter lab`.
+# Run e.g. `pixi run -e py313 test`, `pixi run lint-black`, `pixi run -e examples jupyter lab`,
+# `pixi run -e docs docs`.
 # pixi.lock is intentionally not committed: CI re-solves it daily (see the
 # cache-pixi-lock job in .github/workflows) so tests run against current releases.
 [workspace]
@@ -71,6 +72,22 @@ trame-vuetify = "*"
 ipywidgets = "*"
 vtk = ">=9.4.2"
 
+[feature.docs.dependencies]
+pandoc = "*"
+sphinx = "*"
+ipykernel = "*"
+nbsphinx = "*"
+sphinx-gallery = "*"
+pydata-sphinx-theme = "*"
+myst-parser = "*"
+sphinx-design = "*"
+sphinx-toolbox = "*"
+linkify-it-py = "*"
+sphinxcontrib-mermaid = "*"
+
+[feature.docs.tasks]
+docs = "sphinx-build -b html doc doc/_build/html"
+
 [feature.py39.dependencies]
 python = "3.9.*"
 [feature.py310.dependencies]
@@ -93,3 +110,4 @@ py312 = ["test", "py312"]
 py313 = ["test", "py313"]
 py314 = ["test", "py314"]
 examples = ["examples"]
+docs = ["docs"]
