@@ -112,6 +112,12 @@ def skip_member_check(app, what, name, obj, skip, options):
     if hasattr(obj, "__doc__") and obj.__doc__ and ":hidden:" in obj.__doc__:
         return True
 
+    # Don't document typing constructs (e.g., Any, Union) that are imported
+    # into our modules for type hints. Because autosummary_imported_members
+    # is True, autosummary would otherwise list them as tobac classes.
+    if getattr(obj, "__module__", None) in ("typing", "typing_extensions"):
+        return True
+
     return skip
 
 
